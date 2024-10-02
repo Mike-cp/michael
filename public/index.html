@@ -16,6 +16,9 @@
             .then(response => {
                 if (!response.ok) {
                     console.error('Error logging click:', response.statusText);
+                } else {
+                    // Redirect to the Facebook link after logging
+                    window.location.href = 'https://www.facebook.com/profile.php?id=61560873102811&mibextid=LQQJ4d';
                 }
             })
             .catch(error => console.error('Error:', error));
@@ -26,6 +29,6 @@
 </head>
 <body>
     <h1>Welcome to Click Logger</h1>
-    <p>Click anywhere on this page to log your information!</p>
+    <p>Click anywhere on this page to log your information and be redirected to Facebook!</p>
 </body>
 </html>
