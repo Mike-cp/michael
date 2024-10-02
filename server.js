@@ -6,12 +6,15 @@ const port = process.env.PORT || 3000;
 // Middleware to parse JSON request body
 app.use(express.json());
 
-// Serve the static files from the public directory
+// Serve static files from the public directory
 app.use(express.static('public'));
 
 // Log click information
 app.post('/log', (req, res) => {
-    const { ip, userAgent, language } = req.body;
+    const { userAgent, language } = req.body;
+
+    // Get the IP address from the request
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     // Create a log entry
     const logEntry = `IP: ${ip}, User-Agent: ${userAgent}, Language: ${language}\n`;
