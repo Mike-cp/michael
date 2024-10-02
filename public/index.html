@@ -4,21 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Click Logger</title>
+    <script>
+        function logClick() {
+            const userAgent = navigator.userAgent;
+            const language = navigator.language;
+
+            fetch('/log', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userAgent, language })
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Redirect to Facebook after logging
+                    window.location.href = 'https://www.facebook.com/profile.php?id=61560873102811&mibextid=LQQJ4d';
+                } else {
+                    console.error('Failed to log click');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 </head>
 <body>
-    <h1>Logging Clicks...</h1>
-    <script>
-        // Send the log data to the server
-        fetch('/log', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                userAgent: navigator.userAgent,
-                language: navigator.language
-            })
-        });
-    </script>
+    <h1>Welcome to the Click Logger</h1>
+    <button onclick="logClick()">Click Here</button>
 </body>
 </html>
