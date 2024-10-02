@@ -4,31 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Click Logger</title>
-    <script>
-        function logClick() {
-            fetch('/log', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ clicked: true })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    console.error('Error logging click:', response.statusText);
-                } else {
-                    // Redirect to the Facebook link after logging
-                    window.location.href = 'https://www.facebook.com/profile.php?id=61560873102811&mibextid=LQQJ4d';
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        window.addEventListener('click', logClick);
-    </script>
 </head>
 <body>
-    <h1>Welcome to Click Logger</h1>
-    <p>Click anywhere on this page to log your information and be redirected to Facebook!</p>
+    <h1>Logging Clicks...</h1>
+    <script>
+        // Send the log data to the server
+        fetch('/log', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ip: '',  // You can retrieve the IP from the request on the server
+                userAgent: navigator.userAgent,
+                language: navigator.language
+            })
+        });
+    </script>
 </body>
 </html>
+
