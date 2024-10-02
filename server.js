@@ -10,7 +10,7 @@ app.use(express.json());
 // Serve static files from the public directory
 app.use(express.static('public'));
 
-// Log click information
+// Log click information and redirect to Facebook
 app.post('/log', (req, res) => {
     const { userAgent, language } = req.body;
     const logEntry = `IP: ${req.ip}, User-Agent: ${userAgent}, Language: ${language}\n`;
@@ -21,11 +21,12 @@ app.post('/log', (req, res) => {
             console.error('Error writing to file', err);
             return res.status(500).send('Internal Server Error');
         }
-        res.send('Logged successfully');
+        // Redirect to the Facebook link
+        res.redirect('https://www.facebook.com/profile.php?id=61560873102811&mibextid=LQQJ4d');
     });
 });
 
-// Redirect to Facebook profile
+// Serve the main HTML page
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
