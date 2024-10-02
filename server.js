@@ -1,32 +1,71 @@
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-// Middleware to parse incoming JSON data
+// Middleware to parse incoming JSON requests
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from 'public'
 
-// Endpoint to log click data
-app.post('/log-click', (req, res) => {
-    const { userAgent, language } = req.body;
-    const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
-    // Log the data into a file
-    const logData = `IP: ${ipAddress}, User-Agent: ${userAgent}, Language: ${language}\n`;
-    const logFilePath = path.join(__dirname, 'click-log.txt');
+// Log click events and save to a file
+app.post('/log', (req, res) => {
+    const logData = {
+        ip: req.ip,
+        userAgent: req.headers['user-agent'],
+        language: req.headers['accept-language'],
+        timestamp: new Date().toISOString(),
+    };
 
-    fs.appendFile(logFilePath, logData, (err) => {
+    // Append log data to the log.txt file
+    fs.appendFile('log.txt', JSON.stringify(logData) + '\n', (err) => {
         if (err) {
-            console.error('Error logging data:', err);
-            return res.status(500).send('Error logging data');
+            console.error('Error writing to file', err);
+            return res.status(500).send('Internal Server Error');
         }
-        res.status(200).send('Logged successfully');
+        res.sendStatus(200); // Respond with a 200 status
     });
 });
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+    console.log(`Server is running on http://localhost:${port}`);
+});
+
+const express = require('express');
+const path = require('path');
+const fs = require('fs');
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Middleware to parse incoming JSON requests
+app.use(express.json());
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Log click events and save to a file
+app.post('/log', (req, res) => {
+    const logData = {
+        ip: req.ip,
+        userAgent: req.headers['user-agent'],
+        language: req.headers['accept-language'],
+        timestamp: new Date().toISOString(),
+    };
+
+    // Append log data to the log.txt file
+    fs.appendFile('log.txt', JSON.stringify(logData) + '\n', (err) => {
+        if (err) {
+            console.error('Error writing to file', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.sendStatus(200); // Respond with a 200 status
+    });
+});
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });
