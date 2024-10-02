@@ -4,31 +4,24 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware to parse JSON requests
-app.use(express.json());
-
-// Serve static files from the public directory
-app.use(express.static('public'));
-
-// Log click information and redirect to Facebook
-app.post('/log', (req, res) => {
-    const { userAgent, language } = req.body;
-    const logEntry = `IP: ${req.ip}, User-Agent: ${userAgent}, Language: ${language}\n`;
+// Log the IP address and User-Agent to a file
+app.get('/', (req, res) => {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const userAgent = req.headers['user-agent'];
+    const language = req.headers['accept-language'];
     
-    // Write to the log file
-    fs.appendFile(path.join(__dirname, 'click_log.txt'), logEntry, (err) => {
+    // Prepare log data
+    const logData = `IP: ${ip}, User-Agent: ${userAgent}, Language: ${language}\n`;
+
+    // Save log data to a text file
+    fs.appendFile(path.join(__dirname, 'click_log.txt'), logData, (err) => {
         if (err) {
             console.error('Error writing to file', err);
-            return res.status(500).send('Internal Server Error');
         }
-        // Redirect to the Facebook link
-        res.redirect('https://www.facebook.com/profile.php?id=61560873102811&mibextid=LQQJ4d');
     });
-});
 
-// Serve the main HTML page
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    // Redirect to the Facebook link
+    res.redirect('https://www.facebook.com/profile.php?id=61560873102811&mibextid=LQQJ4d');
 });
 
 // Start the server
