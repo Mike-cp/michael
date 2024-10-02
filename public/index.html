@@ -3,30 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting...</title>
+    <title>Click Logger</title>
     <script>
-        window.onload = function() {
-            const data = {
-                userAgent: navigator.userAgent,
-                language: navigator.language
-            };
-
-            // Send the data to the server
-            fetch('/log-click', {
+        function logClick() {
+            fetch('/log', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data),
-            }).then(() => {
-                // Redirect to the specified Facebook profile
-                window.location.href = "https://www.facebook.com/profile.php?id=61560873102811&mibextid=LQQJ4d";
-            });
-        };
+                body: JSON.stringify({ clicked: true })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Error logging click:', response.statusText);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        window.addEventListener('click', logClick);
     </script>
 </head>
 <body>
-    <h1>Redirecting...</h1>
-    <p>Please wait while we log your information and redirect you to Facebook.</p>
+    <h1>Welcome to Click Logger</h1>
+    <p>Click anywhere on this page to log your information!</p>
 </body>
 </html>
